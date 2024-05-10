@@ -22,7 +22,19 @@ export const ticketStore = defineStore('ticket',{
         async updateTakeAction(data){
             const response = await POST('/tickets/update-taken-action',data);
             this.response = response;
-        }
+        },
+        async getTotalCompleted(){
+            const response = await GET('/tickets/total-completed');
+            this.response = response;
+        },
+        async getTotalPending(){
+            const response = await GET('/tickets/total-pending');
+            this.response = response;
+        },
+        async getTotalInProcess(){
+            const response = await GET('/tickets/total-in-process');
+            this.response = response;
+        },
     },
     getters:{
         getResponse(state){

@@ -23,8 +23,8 @@
                 <div class="absolute w-[200px] h-[200px] bg-white/50 rounded-[50%] bottom-[-100px] right-[-50px]" ></div>
                 <div class="grid items-center h-full" >
                     <div class="px-10" >
-                        <div class="text-[30px] text-white font-bold" >{{totals.condemned}}</div>
-                        <div class="text-white font-semibold" >TOTAL CONDEMNED</div>
+                        <div class="text-[30px] text-white font-bold" >{{totals.in_process}}</div>
+                        <div class="text-white font-semibold" >TOTAL IN PROCESS</div>
                     </div>
                 </div>
             </div>
@@ -67,11 +67,12 @@
 import { onMounted, reactive, ref} from 'vue';
 import Chart from 'primevue/chart';
 import { userStore } from '@/stores/user.store';
+import { ticketStore } from '@/stores/ticket.store';
 
 const totals = reactive({
     pending: 0,
     completed: 0,
-    condemned: 0,
+    in_process: 0,
     users: 0
 })
 
@@ -138,7 +139,7 @@ const chartOptionsService = ref({
 });
 
 
-const FetchTotal = async()=>{
+const FetchTotalUser = async()=>{
     try {
         await userStore().getTotalUsers();
         const response = userStore().getResponse;
@@ -150,9 +151,49 @@ const FetchTotal = async()=>{
     }
 }
 
+const FetchTotalCompleted = async()=>{
+    try {
+        await ticketStore().getTotalCompleted()
+        const response = ticketStore().getResponse;
+        if(response.status){
+           totals.completed = response.total;
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+const FetchTotalPending = async()=>{
+    try {
+        await ticketStore().getTotalPending()
+        const response = ticketStore().getResponse;
+        if(response.status){
+           totals.pending = response.total;
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+
+const FetchTotalInProcess = async()=>{
+    try {
+        await ticketStore().getTotalInProcess()
+        const response = ticketStore().getResponse;
+        if(response.status){
+           totals.in_process = response.total;
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 
 onMounted(async()=>{
-    await FetchTotal();
+    await FetchTotalUser();
+    await FetchTotalCompleted();
+    await FetchTotalPending();
+    await FetchTotalInProcess();
 })
 
 </script>

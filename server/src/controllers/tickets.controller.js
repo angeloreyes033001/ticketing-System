@@ -62,6 +62,33 @@ const updateTakeAction = async(req,res)=>{
     }
 }
 
+const totalCompleted = async(req,res)=>{
+    try {
+        const total = await ticketModel.totalTicketCompleted();
+        return res.send({status:true, total: total});
+    } catch (error) {
+        errors.TryCatchError(error);
+    }
+}
+
+const totalPending = async(req,res)=>{
+    try {
+        const total = await ticketModel.totalTicketPending();
+        return res.send({status:true, total: total});
+    } catch (error) {
+        errors.TryCatchError(error);
+    }
+}
+
+const totalInProcess = async(req,res)=>{
+    try {
+        const total = await ticketModel.totalTicketInProcess();
+        return res.send({status:true, total: total});
+    } catch (error) {
+        errors.TryCatchError(error);
+    }
+}
+
 module.exports = {
     createTicket,
     readTicket,
@@ -69,4 +96,7 @@ module.exports = {
     readAssignedTicket,
     takeAnAction,
     updateTakeAction,
+    totalCompleted,
+    totalPending,
+    totalInProcess
 }

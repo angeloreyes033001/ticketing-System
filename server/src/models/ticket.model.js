@@ -94,7 +94,43 @@ const readAssignedTicket = async(status)=>{
                                     INNER JOIN sections ON users.section_id = sections.section_id 
                                     INNER JOIN divisions ON sections.division_id = divisions.division_id 
                                     WHERE assigned_tickets.status = ${status} ORDER BY assigned_id ASC`
-                                }
+                                };
+
+const totalTicketCompleted = async()=>{
+    try {
+        return await totalTicket('completed');
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+const totalTicketPending = async()=>{
+    try {
+        return await totalTicket();
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+const totalTicketInProcess = async()=>{
+    try {
+        return await totalTicket('in_process');
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+const totalTicket = async(status='pending')=>{
+    try {
+        return await prisma.assigned_tickets.count({
+            where:{
+                status: status
+            }
+        })
+    } catch (error) {
+        console.error(error)
+    }
+}
 
 module.exports = {
     create,
@@ -102,5 +138,8 @@ module.exports = {
     assignedTicket,
     readAssignedTicket,
     takeAnAction,
-    updateTakeAction
+    updateTakeAction,
+    totalTicketCompleted,
+    totalTicketPending,
+    totalTicketInProcess
 }
