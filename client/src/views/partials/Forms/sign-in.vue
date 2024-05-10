@@ -56,7 +56,7 @@ const onLogin =async()=>{
 
         await userStore().login({username:username,password:password});
         const response = userStore().getResponse;
-        console.log(response)
+        
         if(response.status){
             if(response.role == "root"){
                 router.push('/root/dashboard')
@@ -71,6 +71,15 @@ const onLogin =async()=>{
 
             if(response.role == "user"){
                 router.push('/dashboard')
+            }
+        }
+        else{
+            if(response.error == "username"){
+                return credentials.error.username = response.message;
+            }
+
+            if(response.error == "password"){
+                return credentials.error.password = response.message;
             }
         }
 

@@ -70,7 +70,7 @@
                             <span>{{ticketDataHolder[0].prefix}}-{{ticketDataHolder[0].device}}</span>
                         </div>
                     </div> -->
-                    a
+                    
                 </div>
                 <div class="mt-5" >
                     <!-- <h6 class="uppercase font-semibold" >Description of the Problem(s).</h6>
