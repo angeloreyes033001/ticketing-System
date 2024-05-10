@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  root
+  helpdesk
+  technical_support
+  user
+}
+
+enum Status {
+  pending
+  in_process
+  completed
+  condemned
+}
+
+model divisions {
+  division_id Int        @id @default(autoincrement())
+  name        String     @unique @db.VarChar(20)
+  soft_delete Boolean    @default(false)
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  sections    sections[]
+}
+
+model sections {
+  section_id  Int       @id @default(autoincrement())
+  name        String    @unique @db.VarChar(20)
+  division_id Int
+  soft_delete Boolean   @default(false)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  division    divisions @relation(fields: [division_id], references: [division_id])
+  user        users[]
+}
+
+model users {
+  user_id          Int                @id @default(autoincrement())
+  username         String             @unique @db.VarChar(50)
+  firstname        String             @db.VarChar(20)
+  lastname         String             @db.VarChar(20)
+  password         String             @db.VarChar(100)
+  role             Role
+  section_id       Int
+  status           Boolean            @default(false)
+  verify           Boolean            @default(false)
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+  section          sections           @relation(fields: [section_id], references: [section_id])
+  tickets          tickets[]
+  assigned_tickets assigned_tickets[]
+}
+
+model device_prefixs {
+  prefix_id   Int       @id @default(autoincrement())
+  prefix      String    @db.VarChar(20)
+  soft_delete Boolean   @default(false)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  tickets     tickets[]
+}
+
+model forms {
+  form_id     Int       @id @default(autoincrement())
+  type        String    @db.VarChar(20)
+  soft_delete Boolean   @default(false)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  tickets     tickets[]
+}
+
+model tickets {
+  ticket_id        Int                @id @default(autoincrement())
+  device_no        String             @db.VarChar(10)
+  received_date    DateTime           @default(now())
+  problem          String             @db.LongText
+  device_prefix    Int
+  form_id          Int
+  requested_by     Int
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+  prefix           device_prefixs     @relation(fields: [device_prefix], references: [prefix_id])
+  user             users              @relation(fields: [requested_by], references: [user_id])
+  form_type        forms              @relation(fields: [form_id], references: [form_id])
+  assigned_tickets assigned_tickets[]
+}
+
+model assigned_tickets {
+  assigned_id          Int                    @id @default(autoincrement())
+  status               Status
+  ticket_id            Int
+  assigned_in          Int
+  created_at           DateTime               @default(now())
+  updated_at           DateTime               @updatedAt
+  ticket               tickets                @relation(fields: [ticket_id], references: [ticket_id])
+  user                 users                  @relation(fields: [assigned_in], references: [user_id])
+  tech_support_actions tech_support_actions[]
+}
+
+model tech_support_actions {
+  tech_id        Int              @id @default(autoincrement())
+  action         String?          @db.LongText
+  recommendation String?          @db.LongText
+  categories     String?          @db.LongText
+  started_date   DateTime         @default(now())
+  finished_date  DateTime         @updatedAt
+  assigned_to    Int
+  assigned       assigned_tickets @relation(fields: [assigned_to], references: [assigned_id])
+}
