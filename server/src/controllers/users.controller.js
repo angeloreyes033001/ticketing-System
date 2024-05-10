@@ -182,6 +182,15 @@ const getUserRole = async(req,res)=>{
     }
 }
 
+const getTotalUsers = async(req,res)=>{
+    try {
+        const total = await userModel.totalUsers();
+        return res.send({status: true,total:total});
+    } catch (error) {
+        errors.TryCatchError(error);
+    }
+}
+
 const generatePassword = async(req,res)=>{
     bcrypt.hash("admin",10,(error,hash)=>{
         res.send(hash)
@@ -200,5 +209,6 @@ module.exports = {
     updateStatus,
     getUserRole,
     generatePassword,
+    getTotalUsers,
     logout
 }

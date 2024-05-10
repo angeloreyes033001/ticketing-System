@@ -14,5 +14,6 @@ router.put('/verify-account/:id',verifyToken,user.verifyAccount);
 router.put('/update-status/:id',verifyToken,user.updateStatus);
 router.get('/read-user-base-role/:role',verifyToken,user.getUserRole);
 router.get('/logout',verifyToken,user.logout);
+router.get('/total-users',verifyToken,user.getTotalUsers);
 // router.get('/password',user.generatePassword);
 module.exports = router;

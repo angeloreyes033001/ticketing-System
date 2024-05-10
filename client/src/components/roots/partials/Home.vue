@@ -64,8 +64,9 @@
     </div>
 </template>
 <script setup>
-import { reactive, ref} from 'vue';
+import { onMounted, reactive, ref} from 'vue';
 import Chart from 'primevue/chart';
+import { userStore } from '@/stores/user.store';
 
 const totals = reactive({
     pending: 0,
@@ -135,4 +136,23 @@ const chartOptionsService = ref({
         }
     },
 });
+
+
+const FetchTotal = async()=>{
+    try {
+        await userStore().getTotalUsers();
+        const response = userStore().getResponse;
+        if(response.status){
+           totals.users = response.total;
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+
+onMounted(async()=>{
+    await FetchTotal();
+})
+
 </script>

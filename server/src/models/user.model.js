@@ -89,6 +89,15 @@ const verifyAccount = async(id)=>{
     })
 }
 
+const totalUsers = async()=>{
+    return prisma.users.count({
+        where:{
+            status: false,
+            verify: true
+        }
+    })
+}
+
 const updateStatus = async(id)=>{
     const find = await prisma.users.findUnique({
         where:{
@@ -117,5 +126,6 @@ module.exports = {
     getAllUserVerify,
     verifyAccount,
     updateStatus,
-    findByRole
+    findByRole,
+    totalUsers
 }

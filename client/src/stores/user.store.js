@@ -69,7 +69,12 @@ export const userStore = defineStore('user',{
         async readUserWithRole(role='user'){
             const response = await GET(`/users/read-user-base-role/${role}`);
             this.response = response;
-        }
+        },
+
+        async getTotalUsers(){
+            const response = await GET('/users/total-users');
+            this.response = response;
+        },
     },
     getters:{
         getResponse(state){
