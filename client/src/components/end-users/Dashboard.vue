@@ -37,14 +37,8 @@
                 </div>
             </div>
             <div class=" py-5 :order-1 lg:order-1" >
-                <div class="grid sm:grid-cols-3 lg:grid-cols-1 gap-2">
-                    <totalBox label="total pending" total="100" bgColor="bg-custom-orange" />
-                    <totalBox label="total condemend" icon="pi pi-desktop" total="50" bgColor="bg-custom-blue" />
-                    <totalBox label="total completed" total="20" icon="pi pi-check" bgColor="bg-custom-green" />
-                </div>
-                <div class="grid sm:grid-cols-2 lg:grid-cols-1 gap-2 mt-2 ">
-                    <requestedForm title="IN PROCESS TICKET" device="LAP-101" form="Service" problem="Expired ms office" started="03-24-2024" />
-                    <requestedForm title="LAST REQUSTED TICKET" dateLabel="requested" device="LAP-101" form="Service" problem="Expired ms office" started="03-24-2024" />
+                <div>
+                    <requestedForm title="IN PROCESS TICKET" :tickets="inProcessData" />
                 </div>
             </div>
         </div>
@@ -129,7 +123,21 @@ const socket = io(BASE_IO);
 const toast = useToast();
 
 const requestedForm = defineAsyncComponent(()=>import('@/components/end-users/partials/RequestedBox.vue'));
-const totalBox = defineAsyncComponent(()=>import('@/components/end-users/partials/TotalBox.vue'));
+
+const inProcessData = ref([
+    {
+        device: "LAP-101",
+        form: "Service",
+        problem: 'Expired MS Office',
+        started: "03-24-2024"
+    },
+    {
+        device: "COMP-101",
+        form: "Service",
+        problem: 'Expired MS Office',
+        started: "03-24-2024"
+    }
+])
 
 const modalForm = ref(false);
 const modalExpand = ref(false);

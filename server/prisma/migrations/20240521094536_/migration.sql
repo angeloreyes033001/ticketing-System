@@ -95,7 +95,7 @@ CREATE TABLE `tech_support_actions` (
     `tech_id` INTEGER NOT NULL AUTO_INCREMENT,
     `action` LONGTEXT NULL,
     `recommendation` LONGTEXT NULL,
-    `categories` JSON NULL,
+    `categories` LONGTEXT NULL,
     `started_date` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `finished_date` DATETIME(3) NOT NULL,
     `assigned_to` INTEGER NOT NULL,
