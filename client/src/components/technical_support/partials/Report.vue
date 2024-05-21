@@ -31,11 +31,6 @@ const listTabs = ref([
         icon: "pi pi-check",
         to: "/technical-support/dashboard/report/completed"
     },
-    {
-        label: 'Condemnend',
-        icon: "pi pi-desktop",
-        to: "/technical-support/dashboard/report/condemnend"
-    }
 ]);
 
 </script>

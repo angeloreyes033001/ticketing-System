@@ -198,11 +198,6 @@ const router = createRouter({
       children:[
         {
           path: '',
-          name:'technical-support-home',
-          component: ()=>import('@/components/technical_support/partials/Home.vue'),
-        },
-        {
-          path: 'ticket',
           name:'technical-support-ticket',
           component: ()=>import('@/components/technical_support/partials/Ticket.vue'),
         },{
@@ -220,18 +215,8 @@ const router = createRouter({
               name:'report-completed',
               component: ()=>import('@/components/technical_support/partials/Reports/Completed.vue'),
             },
-            {
-              path: 'condemnend',
-              name:'report-condemned',
-              component: ()=>import('@/components/technical_support/partials/Reports/Condemned.vue'),
-            }
           ]
         },
-        // {
-        //   path: 'account',
-        //   name:'co-account',
-        //   component: ()=>import('../../../Account.vue'),
-        // }
       ]
     },
     {

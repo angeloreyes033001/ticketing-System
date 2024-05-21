@@ -42,14 +42,9 @@ const route = useRoute();
 
 const lists = ref([
     {
-        label: "Dashboard",
-        icon: 'pi pi-objects-column',
-        to:['/technical-support/dashboard']
-    },
-    {
         label: "Tickets",
         icon: 'pi pi-ticket',
-        to: ['/technical-support/dashboard/ticket']
+        to: ['/technical-support/dashboard']
     },
     {
         label: "Reports",
