@@ -79,7 +79,7 @@ INNER JOIN sections
 ON users.section_id = sections.section_id 
 INNER JOIN divisions 
 ON sections.division_id = divisions.division_id 
-WHERE users.verify = true AND users.role != 'root'`  ;
+WHERE users.verify = ${verify} AND users.role != 'root'`  ;
 }
 
 const verifyAccount = async(id)=>{
