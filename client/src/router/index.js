@@ -167,7 +167,6 @@ const router = createRouter({
       beforeEnter: async(to,from,next)=>{
         try {
           const response = await verified()
-          console.log(response)
           const auth = response.authentication;
           if(auth){
             const role = response.data[0].role;

@@ -29,7 +29,7 @@
             <Column header="ACTION" >
                 <template #body="{data,index}" >
                     <div class="flex gap-3 justify-center" >
-                        <i @click="getAssignedID(data.assigned_id)" class="pi pi-file cursor-pointer hover:text-slate-300" ></i>
+                        <i @click="getAssignedID(data.ticket_id)" class="pi pi-file cursor-pointer hover:text-slate-300" ></i>
                     </div>
                 </template>
             </Column>
@@ -44,39 +44,38 @@
                     </span>
                 </div>
                 <div class="" >
-                    <!-- <div class="flex justify-between" >
+                    <div class="flex justify-between" >
                         <div class="flex gap-5" >
-                            <span class="uppercase font-semibold" >Date Received:</span>
-                            <span>{{new Date(ticketDataHolder[0].received).toLocaleDateString()}}</span>
+                            <span class="uppercase font-extralight" >Date Received:</span>
+                            <span>{{new Date(ticketDataHolder.received).toLocaleDateString()}}</span>
                         </div>
                     </div>
                     <div class="flex justify-between" >
                         <div class="flex gap-5" >
-                            <span class="uppercase font-semibold">Requested by:</span>
-                            <span>{{ticketDataHolder[0].firstname}} {{ticketDataHolder[0].lastname}}</span>
+                            <span class="uppercase font-extralight">Requested by:</span>
+                            <span>{{ticketDataHolder.firstname}} {{ticketDataHolder.lastname}}</span>
                         </div>
                         <div class="flex gap-5" >
-                            <span class="uppercase font-semibold">Location:</span>
-                            <span>{{ticketDataHolder[0].section}}</span>
+                            <span class="uppercase font-extralight">Location:</span>
+                            <span>{{ticketDataHolder.section}}</span>
                         </div>
                     </div>
                     <div class="flex justify-between" >
                         <div class="flex gap-5" >
-                            <span class="uppercase font-semibold">Service Request No.:</span>
-                            <span>{{new Date(ticketDataHolder[0].received).getFullYear()}}-{{ticketDataHolder[0].ticket_id}}</span>
+                            <span class="uppercase font-extralight">Service Request No.:</span>
+                            <span>{{new Date(ticketDataHolder.received).getFullYear()}}-{{ticketDataHolder.ticket_id}}</span>
                         </div>
                         <div class="flex gap-5" >
-                            <span class="uppercase font-semibold">Computer NO/Printer NO:</span>
-                            <span>{{ticketDataHolder[0].prefix}}-{{ticketDataHolder[0].device}}</span>
+                            <span class="uppercase font-extralight">Computer NO/Printer NO:</span>
+                            <span>{{ticketDataHolder.prefix}}-{{ticketDataHolder.device}}</span>
                         </div>
-                    </div> -->
-                    
+                    </div>
                 </div>
                 <div class="mt-5" >
-                    <!-- <h6 class="uppercase font-semibold" >Description of the Problem(s).</h6>
+                    <h6 class="uppercase font-extralight" >Description of the Problem(s).</h6>
                     <p class="capitalize" > 
-                        {{ticketDataHolder[0].problem}}
-                    </p> -->
+                        {{ticketDataHolder.problem}}
+                    </p>
                 </div>
                 <div class="mt-5 flex justify-end gap-5" >
                     <Button @click="confirmTakeAction" label="Take action" class="w-[200px] bg-custom-blue" icon="pi pi-wrench" iconPos="right" />
@@ -279,7 +278,7 @@ const getAssignedID =(id)=>{
     modalDetail.value = true;
     selectedTicket.value = id;
 
-    ticketDataHolder.value = tickets.value.filter((item)=>item.ticket_id == id);
+    ticketDataHolder.value = tickets.value.find((item)=>{ return item.ticket_id == id;})
 }
 
 const techID = ref(0);
