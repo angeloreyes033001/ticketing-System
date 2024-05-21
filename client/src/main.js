@@ -26,6 +26,8 @@ import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Toast from 'primevue/toast';
 import Checkbox from 'primevue/checkbox';
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab'
 
 const app = createApp(App)
 
@@ -50,6 +52,8 @@ app.component("TabView",TabView)
 app.component("TabPanel",TabPanel)
 app.component("Toast",Toast)
 app.component("Checkbox",Checkbox)
+app.component('Accordion',Accordion)
+app.component('AccordionTab',AccordionTab)
 
 app.use(router)
 

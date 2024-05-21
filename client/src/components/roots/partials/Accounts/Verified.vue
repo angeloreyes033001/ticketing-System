@@ -36,16 +36,104 @@
                         <Button v-show="data.status" @click="updateStatusAccount(data.user_id)" class="bg-red-400" icon="pi pi-unlock" />
                         <Button v-show="!data.status" @click="updateStatusAccount(data.user_id)" class="bg-custom-green" icon="pi pi-lock" />
                     </div>
-                    <Button class="bg-slate-500 pi pi-cog" />
+                    <Button @click="selectUserForSetting(data.user_id)" class="bg-slate-500 pi pi-cog" />
                 </div>
             </template>
         </Column>
     </DataTable>
+    <Dialog  v-model:visible="settingModal"  modal  class="p-5 bg-white max-w-[600px]" >
+        <template #header >
+            <span></span>
+        </template>
+        <div>
+            <div class="" >
+                <Accordion :activeIndex="0">
+                    <AccordionTab header="Personal Information">
+                        <form>
+                            <div class="mt-2" >
+                                <label>Firstname</label>
+                                <InputGroup>
+                                    <InputText v-model="selectedIDSetting.data.firstname" />
+                                    <InputGroupAddon>
+                                        <i class="pi pi-user" ></i>
+                                    </InputGroupAddon>
+                                </InputGroup>
+                                <small class="text-red-400" >Error message</small>
+                            </div>
+                            <div class="mt-2" >
+                                <label>Lastname</label>
+                                <InputGroup>
+                                    <InputText v-model="selectedIDSetting.data.lastname" />
+                                    <InputGroupAddon>
+                                        <i class="pi pi-user" ></i>
+                                    </InputGroupAddon>
+                                </InputGroup>
+                                <small class="text-red-400" >Error message</small>
+                            </div>
+                            <div class="mt-2 flex justify-end" >
+                                <Button type="submit" label="Update" class="bg-blue-400 w-[200px]" icon="pi pi-save" />
+                            </div>
+                        </form>
+                    </AccordionTab>
+                    <AccordionTab header="Division and Section">
+                        <form>
+                            <div class="grid mt-2" >
+                                <label for="">Division</label>
+                                <select v-model="selectedIDSetting.data.division_id" class="h-[40px] border outline-none" >
+                                    <option v-for="data in divisionData" :value="data.division_id" class="capitalize" >{{ data.name }}</option>
+                                </select>
+                            </div>
+                            <div class="grid mt-2" >
+                                <label for="">Section</label>
+                                <select v-model="selectedIDSetting.data.section_id" class="h-[40px] border outline-none" >
+                                    <option value="" >Select Section</option>
+                                    <option v-for="data in computed_sections" :value="data.section_id" class="capitalize" >{{ data.name }}</option>
+                                </select>
+                            </div>
+                            <div class="mt-2 flex justify-end" >
+                                <Button type="submit" label="Update" class="bg-blue-400 w-[200px]"  icon="pi pi-save"  />
+                            </div>
+                        </form>
+                    </AccordionTab>
+                    <AccordionTab header="Change Password">
+                        <form>
+                            <div class="mt-2" >
+                                <label>New Password</label>
+                                <InputGroup>
+                                    <InputText type="password" placeholder="New Password" />
+                                    <InputGroupAddon>
+                                        <i class="pi pi-lock" ></i>
+                                    </InputGroupAddon>
+                                </InputGroup>
+                                <small class="text-red-400" >Error message</small>
+                            </div>
+                            <div class="mt-2" >
+                                <label>Confirm Password</label>
+                                <InputGroup>
+                                    <InputText type="password" placeholder="Confirm Password" />
+                                    <InputGroupAddon>
+                                        <i class="pi pi-lock" ></i>
+                                    </InputGroupAddon>
+                                </InputGroup>
+                                <small class="text-red-400" >Error message</small>
+                            </div>
+                            <div class="mt-2 flex justify-end" >
+                                <Button type="submit" label="Update" class="bg-blue-400 w-[200px]"  icon="pi pi-save"  />
+                            </div>
+                        </form>
+                    </AccordionTab>
+                </Accordion>
+            </div>
+        </div>
+    </Dialog>
 </template>
 <script setup>
 import { ref,computed, onMounted } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import { userStore } from '@/stores/user.store';
+import { reactive } from 'vue';
+import { divisionStore } from '@/stores/division.store';
+import { sectionStore } from '@/stores/section.store';
 const toast = useToast();
 const search = ref('');
 
@@ -71,9 +159,9 @@ const computed_verified = computed(()=>{
     }
 });
 
-const updateStatusAccount = async(id)=>{
+const updateStatusAccount = async(user_id)=>{
     try {
-        await userStore().updateStatus(id);
+        await userStore().updateStatus(user_id);
         const response = userStore().getResponse;
         if(response.status){
             await verfiedUsers();
@@ -84,8 +172,60 @@ const updateStatusAccount = async(id)=>{
     }
 }
 
+const selectedIDSetting = reactive({
+    data:{
+        firstname: "",
+        lastname: "",
+        division_id: "",
+        section_id: ""
+    },
+    errors:{
+        firstname: "",
+        lastname: "",
+        division_id: "",
+        section_id: ""
+    }
+});
+const settingModal = ref(false);
+const selectUserForSetting=(user_id)=>{
+    settingModal.value = true;
+    let user = users.value.find((item)=>{ return item.user_id == user_id});
+    selectedIDSetting.data.firstname = user.firstname;
+    selectedIDSetting.data.lastname = user.lastname;
+    selectedIDSetting.data.division_id = user.division_id;
+    selectedIDSetting.data.section_id = user.section_id;
+}
+
+const divisionData = ref([])
+const FetchDivision = async ()=>{
+    try {
+        await divisionStore().read();
+        divisionData.value = await divisionStore().getDivision;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const sectionData = ref([])
+const FetchSection = async ()=>{
+    try {
+        await sectionStore().read();
+        sectionData.value = await sectionStore().getSection;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const computed_sections = computed(()=>{
+    return sectionData.value.filter((item)=>{
+        return item.division_id == selectedIDSetting.data.division_id
+    })
+});
+
 
 onMounted(async()=>{
     await verfiedUsers();
+    await FetchDivision();
+    await FetchSection();
 })
 </script>

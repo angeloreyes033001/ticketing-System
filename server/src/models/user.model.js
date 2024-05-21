@@ -53,7 +53,9 @@ const findByID = async(id)=>{
         return await prisma.$queryRaw`SELECT 
                                         users.user_id , users.firstname, users.lastname, users.role,
                                         sections.name as section,
-                                        divisions.name as division 
+                                        sections.section_id,
+                                        divisions.name as division,
+                                        divisions.division_id
                                     FROM users 
                                     INNER JOIN sections 
                                     ON users.section_id = sections.section_id 
@@ -67,15 +69,17 @@ const findByID = async(id)=>{
 
 const getAllUserVerify =async (verify=false)=>{
     return await prisma.$queryRaw`SELECT 
-                                        users.user_id ,users.username, users.firstname, users.lastname, users.role,users.verify,users.status,
-                                        sections.name as section,
-                                        divisions.name as division 
-                                    FROM users 
-                                    INNER JOIN sections 
-                                    ON users.section_id = sections.section_id 
-                                    INNER JOIN divisions 
-                                    ON sections.division_id = divisions.division_id 
-                                    WHERE users.verify = ${verify} AND users.role != 'root'  `  ;
+    users.user_id ,users.username, users.firstname, users.lastname, users.role,users.verify,users.status,
+    sections.name as section,
+    sections.section_id,
+    divisions.name as division,
+    divisions.division_id
+FROM users 
+INNER JOIN sections 
+ON users.section_id = sections.section_id 
+INNER JOIN divisions 
+ON sections.division_id = divisions.division_id 
+WHERE users.verify = true AND users.role != 'root'`  ;
 }
 
 const verifyAccount = async(id)=>{
