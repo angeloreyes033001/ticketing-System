@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { GET,POST, PUT } from "@/utils/API/ApiRequest";
+import { loading } from '@/utils/useLoading';
+
 export const prefixStore = defineStore('prefix',{
     state:(()=>({
         response: "",
@@ -7,8 +9,10 @@ export const prefixStore = defineStore('prefix',{
     })),
     actions:{
         async read(){
+            loading.value = !loading.value;
             const response = await GET('/prefixs/read');
             this.prefix = response;
+            loading.value = !loading.value;
         }
     },
     getters:{

@@ -14,7 +14,7 @@
                 </div>
                 <div class="w-[300px]" >
                     <InputGroup class="bg-white" >
-                        <InputText v-model="search" type="text" placeholder="Search..." class="w-full font-light" />
+                        <InputText v-model="search"  :disable="loading" type="text" placeholder="Search..." class="w-full font-light" />
                         <InputGroupAddon>
                             <i class="pi pi-search" ></i>
                         </InputGroupAddon>
@@ -33,10 +33,10 @@
             <template #body="{data,index}">
                 <div class="flex gap-3" >
                     <div class="grid gap-2 place-content-center" > 
-                        <Button v-show="data.status" @click="updateStatusAccount(data.user_id)" class="bg-red-400" icon="pi pi-unlock" />
-                        <Button v-show="!data.status" @click="updateStatusAccount(data.user_id)" class="bg-custom-green" icon="pi pi-lock" />
+                        <Button :loading="loading" :disable="loading" v-show="data.status" @click="updateStatusAccount(data.user_id)" severity="danger" class="" icon="pi pi-unlock" />
+                        <Button :loading="loading" :disable="loading" v-show="!data.status" @click="updateStatusAccount(data.user_id)" class="" icon="pi pi-lock" />
                     </div>
-                    <Button @click="selectUserForSetting(data.user_id)" class="bg-slate-500 pi pi-cog" />
+                    <Button @click="selectUserForSetting(data.user_id)" :loading="loading" :disable="loading" severity="secondary" icon="pi pi-cog" />
                 </div>
             </template>
         </Column>
@@ -53,7 +53,7 @@
                             <div class="mt-2" >
                                 <label>Firstname</label>
                                 <InputGroup>
-                                    <InputText v-model="selectedIDSetting.data.firstname" />
+                                    <InputText :disable="loading" v-model="selectedIDSetting.data.firstname" />
                                     <InputGroupAddon>
                                         <i class="pi pi-user" ></i>
                                     </InputGroupAddon>
@@ -63,7 +63,7 @@
                             <div class="mt-2" >
                                 <label>Lastname</label>
                                 <InputGroup>
-                                    <InputText v-model="selectedIDSetting.data.lastname" />
+                                    <InputText  :disable="loading" v-model="selectedIDSetting.data.lastname" />
                                     <InputGroupAddon>
                                         <i class="pi pi-user" ></i>
                                     </InputGroupAddon>
@@ -71,7 +71,7 @@
                                 <small class="text-red-400" >Error message</small>
                             </div>
                             <div class="mt-2 flex justify-end" >
-                                <Button type="submit" label="Update" class="bg-blue-400 w-[200px]" icon="pi pi-save" />
+                                <Button type="submit" :loading="loading"  :disable="loading" label="Update" class="bg-blue-400 w-[200px]" icon="pi pi-save" />
                             </div>
                         </form>
                     </AccordionTab>
@@ -79,19 +79,19 @@
                         <form>
                             <div class="grid mt-2" >
                                 <label for="">Division</label>
-                                <select v-model="selectedIDSetting.data.division_id" class="h-[40px] border outline-none" >
+                                <select v-model="selectedIDSetting.data.division_id"  :disable="loading" class="h-[40px] border outline-none" >
                                     <option v-for="data in divisionData" :value="data.division_id" class="capitalize" >{{ data.name }}</option>
                                 </select>
                             </div>
                             <div class="grid mt-2" >
                                 <label for="">Section</label>
-                                <select v-model="selectedIDSetting.data.section_id" class="h-[40px] border outline-none" >
+                                <select v-model="selectedIDSetting.data.section_id" :disable="loading" class="h-[40px] border outline-none" >
                                     <option value="" >Select Section</option>
                                     <option v-for="data in computed_sections" :value="data.section_id" class="capitalize" >{{ data.name }}</option>
                                 </select>
                             </div>
                             <div class="mt-2 flex justify-end" >
-                                <Button type="submit" label="Update" class="bg-blue-400 w-[200px]"  icon="pi pi-save"  />
+                                <Button type="submit" label="Update" :loading="loading" :disable="loading" class="bg-blue-400 w-[200px]"  icon="pi pi-save"  />
                             </div>
                         </form>
                     </AccordionTab>
@@ -100,7 +100,7 @@
                             <div class="mt-2" >
                                 <label>New Password</label>
                                 <InputGroup>
-                                    <InputText type="password" placeholder="New Password" />
+                                    <InputText type="password"  :disable="loading" placeholder="New Password" />
                                     <InputGroupAddon>
                                         <i class="pi pi-lock" ></i>
                                     </InputGroupAddon>
@@ -110,7 +110,7 @@
                             <div class="mt-2" >
                                 <label>Confirm Password</label>
                                 <InputGroup>
-                                    <InputText type="password" placeholder="Confirm Password" />
+                                    <InputText type="password"  :disable="loading" placeholder="Confirm Password" />
                                     <InputGroupAddon>
                                         <i class="pi pi-lock" ></i>
                                     </InputGroupAddon>
@@ -118,7 +118,7 @@
                                 <small class="text-red-400" >Error message</small>
                             </div>
                             <div class="mt-2 flex justify-end" >
-                                <Button type="submit" label="Update" class="bg-blue-400 w-[200px]"  icon="pi pi-save"  />
+                                <Button type="submit" label="Update" :loading="loading"  :disable="loading" class="bg-blue-400 w-[200px]"  icon="pi pi-save"  />
                             </div>
                         </form>
                     </AccordionTab>
@@ -128,12 +128,13 @@
     </Dialog>
 </template>
 <script setup>
-import { ref,computed, onMounted } from 'vue';
+import { ref,computed, onMounted, inject } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import { userStore } from '@/stores/user.store';
 import { reactive } from 'vue';
 import { divisionStore } from '@/stores/division.store';
 import { sectionStore } from '@/stores/section.store';
+const { loading } = inject('useLoading');
 const toast = useToast();
 const search = ref('');
 

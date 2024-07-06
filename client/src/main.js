@@ -1,5 +1,5 @@
 import './assets/main.css'
-
+import 'typeface-poppins';
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -27,13 +27,14 @@ import TabPanel from 'primevue/tabpanel';
 import Toast from 'primevue/toast';
 import Checkbox from 'primevue/checkbox';
 import Accordion from 'primevue/accordion';
-import AccordionTab from 'primevue/accordiontab'
+import AccordionTab from 'primevue/accordiontab';
+import TabMenu from 'primevue/tabmenu';
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(PrimeVue, {
-    unstyled: false,
+    unstyled: true,
     pt:Lara
 });
 app.use(ToastService);
@@ -54,6 +55,7 @@ app.component("Toast",Toast)
 app.component("Checkbox",Checkbox)
 app.component('Accordion',Accordion)
 app.component('AccordionTab',AccordionTab)
+app.component('TabMenu',TabMenu)
 
 app.use(router)
 

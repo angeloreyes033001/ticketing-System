@@ -6,7 +6,7 @@
         <h5 class="text-center font-bold text-[18px] sm:text-[20px] md:text-[30px]" >TICKETING SYSTEM</h5>
         <div class="my-3" >
             <InputGroup>
-                <InputText v-model="credentials.field.username"  placeholder="Username" />
+                <InputText v-model="credentials.field.username"  :disabled="loading"  placeholder="Username" />
                 <InputGroupAddon>
                     <i class="pi pi-user" ></i>
                 </InputGroupAddon>
@@ -15,14 +15,14 @@
         </div>
         <div class="my-3" >
             <InputGroup>
-                <InputText v-model="credentials.field.password" type="password" placeholder="Password" />
+                <InputText v-model="credentials.field.password" :disabled="loading" type="password" placeholder="Password" />
                 <InputGroupAddon>
                     <i class="pi pi-eye" ></i>
                 </InputGroupAddon>
             </InputGroup>
             <small v-if="credentials.error.password !=''" class="text-red-300" >{{ credentials.error.password }}</small>
         </div>
-        <Button type="submit" label="Sign In" severity="success" class="w-full" />
+        <Button :loading="loading" :disabled="loading" type="submit" label="Sign In" severity="success" icon="pi pi-sign-in" class="w-full" />
         <div class="flex justify-center mt-2" >
             <router-link to="/registration" >
                 <span class="text-center" >You don't have account?<strong class="text-red-500" > Sign Up</strong></span>
@@ -31,10 +31,11 @@
     </form>
 </template>
 <script setup>
-import {reactive} from 'vue';
+import {reactive, inject} from 'vue';
 import { userStore } from '@/stores/user.store';
 import { isEmpty } from '@/utils/validators/validators.js';
 import { useRouter } from 'vue-router';
+const { loading } = inject('useLoading');
 const router = useRouter();
 const credentials = reactive({
     field:{

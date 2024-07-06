@@ -3,7 +3,7 @@
         <h5 class=" font-bold text-[20px]" >REGISTRATION</h5>
         <div class="my-3" >
             <InputGroup>
-                <InputText placeholder="Username" v-model="credentials.field.username" />
+                <InputText placeholder="Username"  :disabled="loading" v-model="credentials.field.username" />
                 <InputGroupAddon>
                     <i class="pi pi-user" ></i>
                 </InputGroupAddon>
@@ -12,7 +12,7 @@
         </div>
         <div class="my-3" >
             <InputGroup>
-                <InputText placeholder="Firstname" v-model="credentials.field.firstname"  />
+                <InputText placeholder="Firstname"  :disabled="loading" v-model="credentials.field.firstname"  />
                 <InputGroupAddon>
                     <i class="pi pi-user" ></i>
                 </InputGroupAddon>
@@ -21,7 +21,7 @@
         </div>
         <div class="my-3" >
             <InputGroup>
-                <InputText placeholder="Lastname" v-model="credentials.field.lastname"  />
+                <InputText placeholder="Lastname"  :disabled="loading" v-model="credentials.field.lastname"  />
                 <InputGroupAddon>
                     <i class="pi pi-user" ></i>
                 </InputGroupAddon>
@@ -31,13 +31,13 @@
         <div class="my-3 grid grid-cols-[0.5fr,1fr] gap-5" >
             <div class="e" >
                 <!-- <Dropdown v-model="credentials.field.division" class="bg-white w-full" :options="divisionData" optionLabel="division" placeholder="Select a Division" unstyled /> -->
-                <select v-model="credentials.field.location.division" class="h-[40px] w-full border" >
+                <select v-model="credentials.field.location.division"  :disabled="loading" class="h-[40px] w-full border" >
                     <option class="" v-for="division in divisionData" :value="division.division_id" >{{ division.name }}</option>
                 </select>
                 <small v-if="credentials.error.division !=''" class="text-red-300" >{{ credentials.error.section }}</small>
             </div>
             <div class="" >
-                <select v-model="credentials.field.location.section" class="h-[40px] w-full border" >
+                <select v-model="credentials.field.location.section"  :disabled="loading" class="h-[40px] w-full border" >
                     <option value="" disabled selected>Select Section</option>
                     <option class="" v-for="section in computed_sections" :value="section.section_id" >{{ section.name }}</option>
                 </select>
@@ -46,7 +46,7 @@
         </div>
         <div class="my-3" >
             <InputGroup>
-                <InputText  @keyup="validateNewPassword" type="password" v-model="credentials.field.password" placeholder="New Password" />
+                <InputText  @keyup="validateNewPassword"  :disabled="loading" type="password" v-model="credentials.field.password" placeholder="New Password" />
                 <InputGroupAddon>
                     <i class="pi pi-eye" ></i>
                 </InputGroupAddon>
@@ -55,14 +55,14 @@
         </div>
         <div class="my-3" >
             <InputGroup>
-                <InputText @keyup="validateConfirmPassword"  type="password" v-model="credentials.field.confirmPassword"  placeholder="Confirm Password" />
+                <InputText @keyup="validateConfirmPassword"  :disabled="loading"  type="password" v-model="credentials.field.confirmPassword"  placeholder="Confirm Password" />
                 <InputGroupAddon>
                     <i class="pi pi-eye" ></i>
                 </InputGroupAddon>
             </InputGroup>
             <small v-if="credentials.error.confirmPassword !=''" class="text-red-300" >{{ credentials.error.confirmPassword }}</small>
         </div>
-        <Button type="submit" label="SIGN IN" severity="danger" class="w-full" />
+        <Button :loading="loading" :disabled="loading" type="submit" label="SIGN IN" severity="danger" class="w-full" />
         <div class="flex justify-center mt-2" >
             <router-link to="/" >
                 <span class="text-center" >You have already account?<strong class="text-green-500" > Sign In</strong></span>
@@ -71,12 +71,13 @@
     </form>
 </template>
 <script setup>
-import {reactive,ref,onMounted,computed} from 'vue';
+import {reactive,ref,onMounted,computed,inject} from 'vue';
 import { isEmpty } from '@/utils/validators/validators.js';
 import { divisionStore } from '@/stores/division.store';
 import { userStore } from '@/stores/user.store';
 import { sectionStore } from '@/stores/section.store';
 import { useToast } from 'primevue/usetoast';
+const { loading } = inject('useLoading');
 
 const toast = useToast();
 

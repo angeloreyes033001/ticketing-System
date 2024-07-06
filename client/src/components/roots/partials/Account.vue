@@ -1,19 +1,19 @@
 <template>
-    <div class="" >
-        <div class="flex items-center gap-5 p-5 border-2 border-white border-b-slate-300" >
-            <router-link v-for="tab in listTabs" :to="tab.to" class="flex align-items-center gap-2 p-3 rounded-[10px] " :class="{'bg-custom-green-v2 text-white font-semibold': tab.to == route.path }">
-                <div class="grid place-content-center" >
-                    <i :class="tab.icon" ></i>
+    <div class="flex justify-end my-3 mt-5" v-if="route.path != '/admin/dashboard/account' " >
+        <Button @click="modalADD = true" :loading="loading" :disabled="loading" class="sm:w-[300px] font-light" icon="pi pi-user-plus" label=" ADD ACCOUNT" />
+    </div>
+    <TabMenu :model="items" class="">
+        <template #item="{ item, props }">
+            <router-link :to="item.route" >
+                <div class="grid gap-2" v-bind="props.action">
+                    <span class="text-center text-[18px]" v-bind="props.icon" />
+                    <small class="text-[14px] font-light" ><span v-bind="props.label">{{ item.label }}</span></small>
                 </div>
-                <span class=" white-space-nowrap uppercase" :class="{'font-semibold': tab.to == route.path ,'font-light': tab.to != route.path  }" >{{ tab.label }}</span>
             </router-link>
-        </div>
-        <div class="mt-10" >
-            <div class="flex justify-end my-3" v-if="route.path != '/admin/dashboard/account' " >
-                <Button @click="modalADD = true" class="bg-custom-blue w-full sm:w-[300px] pi pi-user-plus" label=" ADD ACCOUNT" />
-            </div>
-            <RouterView/>
-        </div>
+        </template>
+    </TabMenu>
+    <div class="py-5" >
+        <RouterView/>
     </div>
     <Dialog v-model:visible="modalADD" modal class="bg-white w-[90vw] md:max-w-[500px]" >
         <template #header >
@@ -22,17 +22,17 @@
         <form @submit.prevent="onCreateAccount" class="p-3" >
             <div class="grid my-2" >
                 <label for="">Username</label>
-                <InputText v-model="userField.field.username" />
+                <InputText v-model="userField.field.username" :disabled="loading" />
                 <small class="text-red-400" v-if="userField.error.username !=''" >{{ userField.error.username }}</small>
             </div>
             <div class="grid my-2" >
                 <label for="">Firstname</label>
-                <InputText v-model="userField.field.firstname" />
+                <InputText v-model="userField.field.firstname" :disabled="loading" />
                 <small class="text-red-400" v-if="userField.error.firstname !=''" >{{ userField.error.firstname }}</small>
             </div>
             <div class="grid my-2" >
                 <label for="">Lastname</label>
-                <InputText v-model="userField.field.lastname" />
+                <InputText v-model="userField.field.lastname" :disabled="loading" />
                 <small class="text-red-400" v-if="userField.error.lastname !=''" >{{ userField.error.lastname }}</small>
             </div>
             <div class="my-2" >
@@ -40,12 +40,12 @@
                 <div class="grid grid-cols-[150px,1fr] gap-3" >
                     <div class="grid" >
                         <!-- <Dropdown v-model="userField.field.location.division" :options="divisions" optionLabel="name" optionValue="division_id" /> -->
-                        <select class="border h-[50px]" v-model="userField.field.location.division" >
+                        <select class="border h-[50px]" :disabled="loading" v-model="userField.field.location.division" >
                             <option v-for="data in divisions" :value="data.division_id" >{{ data.name }}</option>
                         </select>
                     </div>
                     <div class="grid" >
-                        <select class="border h-[50px]" v-model="userField.field.location.section"  >
+                        <select class="border h-[50px]" :disabled="loading" v-model="userField.field.location.section"  >
                             <option value="" >Select Section</option>
                             <option v-for="data in computed_sections" :value="data.section_id" >{{ data.name }}</option>
                         </select>
@@ -54,23 +54,23 @@
             </div>
             <div class="grid my-2" >
                 <label for="">New Password</label>
-                <InputText type="password" v-model="userField.field.newPassword" @keyup="validateNewPassword" />
+                <InputText type="password" v-model="userField.field.newPassword" :disabled="loading" @keyup="validateNewPassword" />
                 <small class="text-red-400" v-if="userField.error.newPassword !=''" >{{ userField.error.newPassword }}</small>
             </div>
             <div class="grid my-2" >
                 <label for="">Confirm Password</label>
-                <InputText type="password" v-model="userField.field.confirmPassword" @keyup="validateConfirmPassword" />
+                <InputText type="password" v-model="userField.field.confirmPassword" :disabled="loading" @keyup="validateConfirmPassword" />
                 <small class="text-red-400" v-if="userField.error.confirmPassword !=''" >{{ userField.error.confirmPassword }}</small>
             </div>
             <div class="grid my-2" >
                 <label for="">Role</label>
-                <select v-model="userField.field.role" class="border h-[50px] capitalize " >
+                <select v-model="userField.field.role" :disabled="loading" class="border h-[50px] capitalize " >
                     <option v-for="role in roles" :value="role.value" class="capitalize" >{{ role.value }}</option>
                 </select>
                 <small class="text-red-400" v-if="userField.error.role !=''" >{{ userField.error.role }}</small>
             </div>
             <div clas="mt-2" >
-                <Button type="submit" class="pi pi-save bg-custom-blue w-full" label=" SAVE " />
+                <Button :loading="loading" :disabled="loading" type="submit" class="w-full" icon="pi pi-save" label="SAVE" />
             </div>
         </form>
     </Dialog>
@@ -82,22 +82,15 @@ import { userStore } from '@/stores/user.store';
 import { divisionStore } from '@/stores/division.store';
 import { isEmpty } from '@/utils/validators/validators.js';
 import { useToast } from 'primevue/usetoast';
+const { loading } = inject('useLoading');
 const toast = useToast();
 const modalADD = ref(false)
 
 const route = useRoute()
 
-const listTabs = ref([
-    {
-        label: 'unverified',
-        icon: "pi pi-user-plus",
-        to: "/root/dashboard/account"
-    },
-    {
-        label: 'verified',
-        icon: "pi pi-users",
-        to: "/root/dashboard/account/verified"
-    },
+const items = ref([
+        { label: 'Unverify', icon: 'pi pi-users', route: "/root/dashboard/account" },
+        { label: 'Verified', icon: 'pi pi-user', route: "/root/dashboard/account/verified" },
 ]);
 
 
